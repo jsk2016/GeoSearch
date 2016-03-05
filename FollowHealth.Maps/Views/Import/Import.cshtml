@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "Import";
+}
+
+<h2>Import</h2>
+<div>
+    <input id="btnImport" type="button" value="Import" onclick="importData();" />
+
+</div>
+<script>
+    function importData() {
+        var action = "ImportExcelData";
+        var contrlName = "Import";
+        var url = GetAbsoluteUrl(action, contrlName, "?isNew=true");
+        showHideDivMask('IMGDIV', 'block');
+
+        sendPartialRequest(url, "", function () {
+            alert("success");
+        });
+
+    }
+
+    function GetAbsoluteUrl(action, controller, param) {
+        var url = '@Url.Action("action", "controller", null, Request.Url.Scheme)'
+        return url.replace("action", action).replace("controller", controller) + param;
+    }
+
+
+</script>

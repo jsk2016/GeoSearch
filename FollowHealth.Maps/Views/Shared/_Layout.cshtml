@@ -1,0 +1,51 @@
+﻿@using FollowHealth.Maps.Utilities
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Orvoz Maps</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @*<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places"></script>*@
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/jquery.geocomplete.js"></script>
+    <script src="~/Scripts/MicrosoftAjax.debug.js"></script>
+    <script src="~/Scripts/GoogleMapHelpers.js"></script>
+    <script src="~/Scripts/default.js"></script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Orvoz Maps", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+        </div>
+    </div>
+    <div class="body-content">
+        @RenderBody()
+    </div>
+    <br />
+    <br />
+    <hr />
+    <div class="container">
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Orvoz</p>
+        </footer>
+    </div>
+    <div id="divMask" style="display: none;">
+    </div>
+    <div id="IMGDIV" style="display: none; position: absolute; padding: 10px; border-radius: 5px;
+        border: 2px solid #9CCEF3; background-color: White;">
+        <img src="@Url.Image("loading.gif")" alt="Loading" />
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

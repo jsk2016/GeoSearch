@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="FollowHealth.MapsModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="District" Type="nchar" MaxLength="100" />
+          <Property Name="Postal Addres" Type="nchar" MaxLength="250" />
+          <Property Name="City" Type="nchar" MaxLength="250" />
+          <Property Name="Latitude" Type="nchar" MaxLength="100" />
+          <Property Name="Longitude" Type="nchar" MaxLength="100" />
+          <Property Name="Latitude1" Type="nchar" MaxLength="100" />
+          <Property Name="Longitude1" Type="nchar" MaxLength="100" />
+        </EntityType>
+        <EntityContainer Name="FollowHealthMapsModelStoreContainer">
+          <EntitySet Name="Address" EntityType="Self.Address" Schema="dbo" store:Type="Tables" />
+          </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FollowHealth.MapsModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FollowHealthEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Addresses" EntityType="FollowHealth.MapsModel.Address" />
+        </EntityContainer>
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="District" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="Postal_Addres" Type="String" MaxLength="250" FixedLength="true" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="250" FixedLength="true" Unicode="true" />
+          <Property Name="Latitude" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="Longitude" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="Latitude1" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+          <Property Name="Longitude1" Type="String" MaxLength="100" FixedLength="true" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FollowHealthMapsModelStoreContainer" CdmEntityContainer="FollowHealthEntities">
+          <EntitySetMapping Name="Addresses">
+            <EntityTypeMapping TypeName="FollowHealth.MapsModel.Address">
+              <MappingFragment StoreEntitySet="Address">
+                <ScalarProperty Name="Longitude1" ColumnName="Longitude1" />
+                <ScalarProperty Name="Latitude1" ColumnName="Latitude1" />
+                <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+                <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Postal_Addres" ColumnName="Postal Addres" />
+                <ScalarProperty Name="District" ColumnName="District" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

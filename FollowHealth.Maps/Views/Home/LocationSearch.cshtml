@@ -1,0 +1,203 @@
+﻿
+<script>
+    window.onload = new function () {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyA38zCzaqww2ROAQ81u-vl3WfFQwMDoeoM&signed_in=true&libraries=places&callback=initMap";
+        document.body.appendChild(script);
+    }
+    var locations;
+    var locationsJson;
+    var overlayContentsJson;
+    //start
+    function initService() {
+        var input = document.getElementById('pac-input');
+        var displaySuggestions = function (predictions, status) {
+            if (status != google.maps.places.PlacesServiceStatus.OK) {
+                alert(status);
+                return;
+            }
+
+            predictions.forEach(function (prediction) {
+                var li = document.createElement('li');
+                li.appendChild(document.createTextNode(prediction.description));
+                document.getElementById('results').appendChild(li);
+            });
+        };
+
+        var service = new google.maps.places.AutocompleteService();
+        service.getQueryPredictions({ input: input }, displaySuggestions);
+    }
+
+    //end
+    function initMap() {
+        // $("#loading").hide();
+        var input = document.getElementById('pac-input');
+        var action = "LoadAllLocationData";
+        var contrlName = "Home";
+        var tempId = '@Guid.NewGuid()';
+        var url = GetAbsoluteUrl(action, contrlName, "?isNew=true," + tempId);
+        if (input.value == "") {
+            $.getJSON(url, { cityLat: 0, cityLng: 0 }, function (data) {
+                locations = eval(data.locationsDataJson);
+                locationsJson = eval(data.locationsJson);
+                overlayContentsJson = eval(data.overlayContentsJson);
+                init_map('map_canvas', data.defaultLatitude, data.defaultLongitude, 6, eval(data.locationsJson), eval(data.overlayContentsJson), false, false, 0);
+            });
+        }
+        else {
+
+
+        }
+        var map = new google.maps.Map(document.getElementById('map_canvas'), {
+            center: { lat: 28.6538100, lng: 77.2289700 },
+            zoom: 13
+        });
+
+
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.bindTo('bounds', map);
+
+        var infowindow = new google.maps.InfoWindow();
+        var marker = new google.maps.Marker({
+            map: map,
+            anchorPoint: new google.maps.Point(0, -29)
+        });
+
+        autocomplete.addListener('place_changed', function () {
+
+            infowindow.close();
+            marker.setVisible(false);
+            var place = autocomplete.getPlace();
+            if (!place.geometry) {
+                window.alert("Autocomplete's returned place contains no geometry");
+                return;
+            }
+            if (input.value != "") {
+
+                ClosestLocation(place.geometry.location.lat(), place.geometry.location.lng(), input.value);
+
+            }
+           
+        });
+
+    }
+
+
+    var val = "";
+    function initializeMAP() {
+        var action = "LoadAllLocationData";
+        var contrlName = "Home";
+        var tempId = '@Guid.NewGuid()';
+        var cityName = document.getElementById("txtCity").value;
+        var url = GetAbsoluteUrl(action, contrlName, "?isNew=true," + tempId);
+        $.getJSON(url, { cityName: cityName }, function (data) {
+            $(".googleMap").width('70%');
+            $(".googleMap").height('60%');
+            $(".googleMap").css({ 'border': '1px solid #ccc' });
+            $("#loading").hide();
+            $("#map_canvas").show();
+            init_map('map_canvas', data.defaultLatitude, data.defaultLongitude, 8, eval(data.locationsJson), eval(data.overlayContentsJson), false, false, arrDistInd, "");
+        });
+    }
+    function GetAbsoluteUrl(action, controller, param) {
+        var url = '@Url.Action("action", "controller", null, Request.Url.Scheme)'
+        return url.replace("action", action).replace("controller", controller) + param;
+    }
+</script>
+@*<input id="find" type="button" value="Find" onclick="place_changed();"/>*@
+<div id="right-panel" style="overflow:auto;height:600px;">
+    @*<div style="padding:3px"> <input type="text" id="txtPatientName" placeholder="Type in patient name" /></div>
+    <div style="padding:3px"><input type="text" id="txtPatientName" placeholder="Type in mobile number" /></div>*@
+    <input id="pac-input" type="text" placeholder="Type in an address" size="35" class="controls" />
+    <div id="divSearchResult">
+
+    </div>
+    <div style="padding:3px;visibility:hidden;text-align:right;margin-right:15px;" id="divPrint"> <input type="button" id="txtSaveDetails" value="Print" onClick="window.print()"/></div>
+    <div style="padding:3px;visibility:hidden;text-align:right;margin-right:5px;" id="divSave"> <input type="button" id="txtSaveDetails" value="Save" /></div>
+</div>
+<script>
+    var arrDist = [];
+    var arrDistInd = [];
+    // Display a map centered at the nearest location with a marker and InfoWindow.
+    function ClosestLocation(lat, lon, title) {
+        // Create a Google coordinate object for where to center the map
+        var latlng = new google.maps.LatLng(lat, lon);
+       
+        // Map options for how to display the Google map
+        var mapOptions = { zoom: 12, center: latlng };
+
+        // Show the Google map in the div with the attribute id 'map-canvas'.
+        map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+        // find the closest location to the user's location
+        var closest = 0;
+        var mindist = 99999;
+        var ind = 0;
+        var locList;
+
+        for (var i = 0; i < locations.length; i++) {
+            // get the distance between user's location and this point
+            var dist = Haversine(locations[i].lat, locations[i].lon, lat, lon);
+
+            // check if this is the shortest distance so far
+            if (dist < mindist) {
+                closest = i;
+                mindist = dist;
+                // locList = loc;
+                SetDistArray(ind, mindist, closest);
+                ind = ind + 1;
+
+            }
+
+        }
+
+        var divResult = "";
+        for (var i = arrDistInd.length - 1; i > (arrDistInd.length - 5) ; i--) {
+
+            divResult = divResult + "<a href='#' title='click here to zoom' onclick='showMarker(" + arrDistInd[i] + "," + latlng + ");' id='link" + i + "' > <br/>" + locations[arrDistInd[i]].title + "</br> </a> <b>Distance: </b>" + arrDist[i] + " km </br> <br/> ";
+
+        }
+        document.getElementById('divSearchResult').innerHTML = divResult;
+        //document.getElementById('divSave').style.visibility = "visible";
+        document.getElementById('divPrint').style.visibility = "visible";
+        init_map('map_canvas', locations[closest].lat, locations[closest].lon, 9, locationsJson, overlayContentsJson, false, true, arrDistInd, latlng);
+    }
+    var recLoc;
+    function showMarker(closest) {
+        recLoc = closest;
+        var tempArr = [1];
+        tempArr[0] = closest;
+        init_map('map_canvas', locations[closest].lat, locations[closest].lon, 15, locationsJson, overlayContentsJson, false, true, tempArr, "");
+    }
+    // Convert Degress to Radians
+    function Deg2Rad(deg) {
+        return deg * Math.PI / 180;
+    }
+
+    // Get Distance between two lat/lng points using the Haversine function
+    // First published by Roger Sinnott in Sky & Telescope magazine in 1984 (“Virtues of the Haversine”)
+    //
+    function Haversine(lat1, lon1, lat2, lon2) {
+        var R = 6372.8; // Earth Radius in Kilometers
+
+        var dLat = Deg2Rad(lat2 - lat1);
+        var dLon = Deg2Rad(lon2 - lon1);
+
+        var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                        Math.cos(Deg2Rad(lat1)) * Math.cos(Deg2Rad(lat2)) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c;
+
+        // Return Distance in Kilometers
+        return d;
+    }
+
+    function SetDistArray(ind, mindist, closest) {
+
+        arrDist.push(mindist.toFixed(2));
+        arrDistInd.push(closest);
+    }
+
+</script>

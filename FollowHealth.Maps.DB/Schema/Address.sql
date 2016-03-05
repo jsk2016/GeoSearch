@@ -1,0 +1,30 @@
+﻿PRINT '--START CHECKING Address TABLE EXISTS OR NOT'
+IF NOT EXISTS (
+	SELECT *
+	FROM 
+		INFORMATION_SCHEMA.TABLES 
+	WHERE 
+	TABLE_NAME='Address'
+)
+BEGIN
+    PRINT '--CREATING Address TABLE'
+
+CREATE TABLE [dbo].[Address](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[District] [nchar](100) NULL,
+	[Postal Addres] [nchar](250) NULL,
+	[City] [nchar](250) NULL,
+	[Latitude] [nchar](100) NULL,
+	[Longitude] [nchar](100) NULL,
+	[Latitude1] [nchar](100) NULL,
+	[Longitude1] [nchar](100) NULL,
+ CONSTRAINT [PK_Address] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+END
+GO
+
+
